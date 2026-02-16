@@ -4,6 +4,11 @@ test.describe('Constructor section tests', () => {
   const widgetUrl = 'https://dev.3snet.info/eventswidget/';
   const widgetUrlPattern = /\/eventswidget\/?$/;
   const constructorTypeSelector = '[data-name="type"]';
+  const typeCheckselectSelector = '.checkselect:has(input[name="type"])';
+  const typeDropdownControlSelector = `${typeCheckselectSelector} .checkselect-control`;
+  const typeFirstOptionCheckboxSelector = `${typeCheckselectSelector} input[name="type"][value]:not([value=""])`;
+  const typeFirstOptionLabelSelector = `${typeCheckselectSelector} label:has(input[name="type"][value]:not([value=""]))`;
+  const typeClearSelector = '.checkselect-clear[data-name="type"]';
 
   test.beforeEach(async ({ page }) => {
     const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
@@ -15,5 +20,22 @@ test.describe('Constructor section tests', () => {
   test('type field exists', async ({ page }) => {
     const typeFieldCount = await page.locator(constructorTypeSelector).count();
     expect(typeFieldCount, 'data-name="type" should exist in DOM').toBeGreaterThan(0);
+  });
+
+  test('first type checkbox enables active clear control', async ({ page }) => {
+    const typeDropdownControl = page.locator(typeDropdownControlSelector).first();
+    await expect(typeDropdownControl, 'Type dropdown control should be visible').toBeVisible();
+    await typeDropdownControl.click();
+
+    const firstTypeOptionLabel = page.locator(typeFirstOptionLabelSelector).first();
+    await expect(firstTypeOptionLabel, 'First type option label should be visible in dropdown').toBeVisible();
+    await firstTypeOptionLabel.click();
+
+    const firstTypeCheckbox = page.locator(typeFirstOptionCheckboxSelector).first();
+    await expect(firstTypeCheckbox, 'First type checkbox should be checked after click').toBeChecked();
+
+    const typeClearControl = page.locator(typeClearSelector).first();
+    await expect(typeClearControl, 'Type clear control should be visible').toBeVisible();
+    await expect(typeClearControl, 'Type clear control should have active state').toHaveClass(/active/);
   });
 });
