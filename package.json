@@ -1,0 +1,28 @@
+{
+  "name": "eventswidget-playwright-test",
+  "version": "1.0.0",
+  "description": "Playwright automation for https://dev.3snet.info/eventswidget/",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vladimir-Tarasov/eventswidget-playwright-test.git"
+  },
+  "keywords": [
+    "playwright",
+    "qa",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vladimir-Tarasov/eventswidget-playwright-test/issues"
+  },
+  "homepage": "https://github.com/Vladimir-Tarasov/eventswidget-playwright-test#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
