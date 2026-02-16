@@ -39,4 +39,10 @@ test.describe('Events widget smoke tests', () => {
     await expect(page).toHaveURL(/\/eventswidget\/?$/);
     await expect(page.locator('.header-container').first()).toBeVisible();
   });
+
+  test('constructor exists', async ({ page }) => {
+    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+    await expect(page.locator('.constructor')).toHaveCount(1);
+  });
 });
