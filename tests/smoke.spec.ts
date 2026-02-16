@@ -4,6 +4,9 @@ test.describe('Events widget smoke tests', () => {
   test.describe.configure({ mode: 'serial' });
   const widgetSelector = '.constructor';
   const widgetUrl = 'https://dev.3snet.info/eventswidget/';
+  const previewButtonSelector = '.constructor__preview button';
+  const previewFrameSelector = '#preview iframe';
+  const eventCardSelector = '.event-activity-item';
 
   test('page loads and renders visible content', async ({ page }) => {
     const pageErrors: string[] = [];
@@ -32,5 +35,26 @@ test.describe('Events widget smoke tests', () => {
     const widgetContainer = page.locator(widgetSelector).first();
     await expect(widgetContainer).toBeVisible();
     await expect(widgetContainer).toBeInViewport();
+  });
+
+  test('at least one event card exists within the list', async ({ page }) => {
+    await page.goto(widgetUrl, { waitUntil: 'load' });
+    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+
+    await page.locator(previewButtonSelector).click();
+    const previewFrame = page.locator(previewFrameSelector);
+    await expect(previewFrame).toBeVisible();
+
+    const frameElement = await previewFrame.elementHandle();
+    expect(frameElement, 'Preview iframe should exist in DOM').not.toBeNull();
+
+    const frame = await frameElement!.contentFrame();
+    expect(frame, 'Preview iframe should expose a frame context').not.toBeNull();
+
+    await frame!.waitForLoadState('domcontentloaded');
+    await frame!.waitForSelector(eventCardSelector);
+
+    const cardsCount = await frame!.locator(eventCardSelector).count();
+    expect(cardsCount, 'At least one event card should be present in the widget list').toBeGreaterThan(0);
   });
 });
