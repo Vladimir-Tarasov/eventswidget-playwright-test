@@ -14,4 +14,10 @@ test.describe('Events widget header tests', () => {
     await expect(page).toHaveURL(/\/eventswidget\/?$/);
     await expect(page.locator('header .searchBox, header [aria-label*="Search"], header [aria-label*="Поиск"]').first()).toBeVisible();
   });
+
+  test('header language selector exists', async ({ page }) => {
+    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+    await expect(page.locator('.header-lang .desktop-lang, .desktop-lang').first()).toBeVisible();
+  });
 });
