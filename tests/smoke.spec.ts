@@ -51,4 +51,10 @@ test.describe('Events widget smoke tests', () => {
     await expect(page).toHaveURL(/\/eventswidget\/?$/);
     await expect(page.locator('.promocodes-carousel').first()).toBeVisible();
   });
+
+  test('footer exists', async ({ page }) => {
+    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+    await expect(page.locator('footer').first()).toBeVisible();
+  });
 });
