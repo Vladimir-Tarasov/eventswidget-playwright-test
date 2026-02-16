@@ -5,6 +5,11 @@ test.describe('Constructor section tests', () => {
   const widgetUrl = 'https://dev.3snet.info/eventswidget/';
   const widgetUrlPattern = /\/eventswidget\/?$/;
   const constructorTypeSelector = '[data-name="type"]';
+  const constructorCountrySelector = '[data-name="country"]';
+  const constructorPreviewSelector = '#preview';
+  const constructorWidthInputSelector = 'input[name="width"]';
+  const constructorHeightInputSelector = 'input[name="height"]';
+  const constructorAccentColorStepSelector = 'text=/Шаг\\s*4/i';
   const typeCheckselectSelector = '.checkselect:has(input[name="type"])';
   const typeDropdownControlSelector = `${typeCheckselectSelector} .checkselect-control`;
   const typeFirstOptionCheckboxSelector = `${typeCheckselectSelector} input[name="type"][value]:not([value=""])`;
@@ -62,6 +67,35 @@ test.describe('Constructor section tests', () => {
   test('type field exists', async ({ page }) => {
     const typeFieldCount = await page.locator(constructorTypeSelector).count();
     expect(typeFieldCount, 'data-name="type" should exist in DOM').toBeGreaterThan(0);
+  });
+
+  test('country field exists', async ({ page }) => {
+    const countryFieldCount = await page.locator(constructorCountrySelector).count();
+    expect(countryFieldCount, 'data-name="country" should exist in DOM').toBeGreaterThan(0);
+  });
+
+  test('preview field exists', async ({ page }) => {
+    const previewFieldCount = await page.locator(constructorPreviewSelector).count();
+    expect(previewFieldCount, 'id="preview" should exist in DOM').toBeGreaterThan(0);
+  });
+
+  test('width input exists', async ({ page }) => {
+    await expect(page.locator(constructorWidthInputSelector).first(), 'input[name="width"] should exist in DOM').toBeVisible();
+  });
+
+  test('height input exists', async ({ page }) => {
+    await expect(page.locator(constructorHeightInputSelector).first(), 'input[name="height"] should exist in DOM').toBeVisible();
+  });
+
+  test('accent-color step exists', async ({ page }) => {
+    await expect(page.locator(constructorAccentColorStepSelector).first(), 'accent-color step should exist in DOM').toBeVisible();
+  });
+
+  test('generate preview button exists', async ({ page }) => {
+    await expect(
+      page.locator('.constructor__preview button').first(),
+      '"Generate preview" button should exist in DOM',
+    ).toBeVisible();
   });
 
   test('first type checkbox enables active clear control', async ({ page }) => {
