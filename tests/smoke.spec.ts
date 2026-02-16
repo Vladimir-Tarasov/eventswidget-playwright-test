@@ -2,8 +2,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Events widget smoke tests', () => {
   test.describe.configure({ mode: 'serial' });
-  const widgetSelector = '.constructor';
   const widgetUrl = 'https://dev.3snet.info/eventswidget/';
+  const widgetUrlPattern = /\/eventswidget\/?$/;
+  const bodySelector = 'body';
+  const visibleElementsSelector = 'body *:visible';
+  const widgetSelector = '.constructor';
+  const headerContainerSelector = '.header-container';
+  const promocodesCarouselSelector = '.promocodes-carousel';
+  const footerSelector = 'footer';
 
   test('page loads and renders visible content', async ({ page }) => {
     const pageErrors: string[] = [];
@@ -15,11 +21,11 @@ test.describe('Events widget smoke tests', () => {
     const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
     expect(response, 'Main page response should exist').not.toBeNull();
     expect(response?.ok(), 'Main page should return successful response').toBeTruthy();
-    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+    await expect(page).toHaveURL(widgetUrlPattern);
 
-    await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator(bodySelector)).toBeVisible();
 
-    const visibleBlocks = await page.locator('body *:visible').count();
+    const visibleBlocks = await page.locator(visibleElementsSelector).count();
     expect(visibleBlocks, 'Widget should render visible DOM nodes').toBeGreaterThan(5);
 
     expect(pageErrors, `Browser page errors found: ${pageErrors.join(' | ')}`).toHaveLength(0);
@@ -27,7 +33,7 @@ test.describe('Events widget smoke tests', () => {
 
   test('widget container is visible', async ({ page }) => {
     await page.goto(widgetUrl, { waitUntil: 'load' });
-    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+    await expect(page).toHaveURL(widgetUrlPattern);
 
     const widgetContainer = page.locator(widgetSelector).first();
     await expect(widgetContainer).toBeVisible();
@@ -36,25 +42,25 @@ test.describe('Events widget smoke tests', () => {
 
   test('header container exists', async ({ page }) => {
     await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/\/eventswidget\/?$/);
-    await expect(page.locator('.header-container').first()).toBeVisible();
+    await expect(page).toHaveURL(widgetUrlPattern);
+    await expect(page.locator(headerContainerSelector).first()).toBeVisible();
   });
 
   test('constructor exists', async ({ page }) => {
     await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/\/eventswidget\/?$/);
-    await expect(page.locator('.constructor')).toHaveCount(1);
+    await expect(page).toHaveURL(widgetUrlPattern);
+    await expect(page.locator(widgetSelector)).toHaveCount(1);
   });
 
   test('promocodes carousel exists', async ({ page }) => {
     await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/\/eventswidget\/?$/);
-    await expect(page.locator('.promocodes-carousel').first()).toBeVisible();
+    await expect(page).toHaveURL(widgetUrlPattern);
+    await expect(page.locator(promocodesCarouselSelector).first()).toBeVisible();
   });
 
   test('footer exists', async ({ page }) => {
     await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/\/eventswidget\/?$/);
-    await expect(page.locator('footer').first()).toBeVisible();
+    await expect(page).toHaveURL(widgetUrlPattern);
+    await expect(page.locator(footerSelector).first()).toBeVisible();
   });
 });
