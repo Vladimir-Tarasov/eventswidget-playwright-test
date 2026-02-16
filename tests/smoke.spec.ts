@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 test.describe('Events widget smoke tests', () => {
   test.describe.configure({ mode: 'serial' });
@@ -11,17 +11,19 @@ test.describe('Events widget smoke tests', () => {
   const promocodesCarouselSelector = '.promocodes-carousel';
   const footerSelector = 'footer';
 
+  test.beforeEach(async ({ page }) => {
+    const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
+    expect(response, 'Main page response should exist').not.toBeNull();
+    expect(response?.ok(), 'Main page should return successful response').toBeTruthy();
+    await expect(page).toHaveURL(widgetUrlPattern);
+  });
+
   test('page loads and renders visible content', async ({ page }) => {
     const pageErrors: string[] = [];
 
     page.on('pageerror', (error) => {
       pageErrors.push(error.message);
     });
-
-    const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    expect(response, 'Main page response should exist').not.toBeNull();
-    expect(response?.ok(), 'Main page should return successful response').toBeTruthy();
-    await expect(page).toHaveURL(widgetUrlPattern);
 
     await expect(page.locator(bodySelector)).toBeVisible();
 
@@ -32,35 +34,24 @@ test.describe('Events widget smoke tests', () => {
   });
 
   test('widget container is visible', async ({ page }) => {
-    await page.goto(widgetUrl, { waitUntil: 'load' });
-    await expect(page).toHaveURL(widgetUrlPattern);
-
     const widgetContainer = page.locator(widgetSelector).first();
     await expect(widgetContainer).toBeVisible();
     await expect(widgetContainer).toBeInViewport();
   });
 
   test('header container exists', async ({ page }) => {
-    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(widgetUrlPattern);
     await expect(page.locator(headerContainerSelector).first()).toBeVisible();
   });
 
   test('constructor exists', async ({ page }) => {
-    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(widgetUrlPattern);
     await expect(page.locator(widgetSelector)).toHaveCount(1);
   });
 
   test('promocodes carousel exists', async ({ page }) => {
-    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(widgetUrlPattern);
     await expect(page.locator(promocodesCarouselSelector).first()).toBeVisible();
   });
 
   test('footer exists', async ({ page }) => {
-    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(widgetUrlPattern);
     await expect(page.locator(footerSelector).first()).toBeVisible();
   });
 });
