@@ -21,28 +21,27 @@ Playwright-based UI smoke test project for:
 1. Install dependencies:
 
 ```bash
-npm.cmd install
+npm install
 ```
 
 2. Install Playwright browser(s):
 
 ```bash
-npx.cmd playwright install
+npx playwright install
 ```
 
 3. Run test(s):
 
 ```bash
-npm.cmd test
+npm test
 ```
 
 4. Optional: open HTML report:
 
 ```bash
-npm.cmd run report
+npm run report
 ```
 
 ## Notes
 
-- If PowerShell execution policy blocks `npm`, use `npm.cmd` and `npx.cmd` commands.
 - The test intentionally keeps selectors generic to stay resilient if widget internals change.
