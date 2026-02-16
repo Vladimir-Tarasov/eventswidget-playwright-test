@@ -38,4 +38,23 @@ test.describe('Constructor section tests', () => {
     await expect(typeClearControl, 'Type clear control should be visible').toBeVisible();
     await expect(typeClearControl, 'Type clear control should have active state').toHaveClass(/active/);
   });
+
+  test('dropdown checkbox can be selected and cleared', async ({ page }) => {
+    const typeDropdownControl = page.locator(typeDropdownControlSelector).first();
+    await expect(typeDropdownControl, 'Type dropdown control should be visible').toBeVisible();
+    await typeDropdownControl.click();
+
+    const randomTypeCheckbox = page.locator(typeFirstOptionCheckboxSelector).nth(1);
+    const randomTypeOptionLabel = page.locator(typeFirstOptionLabelSelector).nth(1);
+
+    await expect(randomTypeOptionLabel, 'Random type option label should be visible').toBeVisible();
+    await randomTypeOptionLabel.click();
+    await expect(randomTypeCheckbox, 'Random type checkbox should be selected').toBeChecked();
+
+    const typeClearControl = page.locator(typeClearSelector).first();
+    await expect(typeClearControl, 'Type clear control should be visible').toBeVisible();
+    await typeClearControl.click();
+
+    await expect(randomTypeCheckbox, 'Random type checkbox should be unselected after clear').not.toBeChecked();
+  });
 });
