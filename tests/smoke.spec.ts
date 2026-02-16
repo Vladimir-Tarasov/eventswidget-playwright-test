@@ -33,4 +33,10 @@ test.describe('Events widget smoke tests', () => {
     await expect(widgetContainer).toBeVisible();
     await expect(widgetContainer).toBeInViewport();
   });
+
+  test('header container exists', async ({ page }) => {
+    await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/eventswidget\/?$/);
+    await expect(page.locator('.header-container').first()).toBeVisible();
+  });
 });
