@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const isCI = Boolean((globalThis as any).process?.env?.CI);
+declare const process: { env: Record<string, string | undefined> } | undefined;
+const isCI = Boolean(process?.env?.CI);
 
 export default defineConfig({
   testDir: './tests',

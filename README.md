@@ -36,7 +36,19 @@ npx playwright install
 npm test
 ```
 
-4. Optional: open HTML report:
+4. Run in headed mode (visible browser):
+
+```bash
+npm run test:headed
+```
+
+5. Run with Playwright UI mode:
+
+```bash
+npm run test:ui
+```
+
+6. Optional: open HTML report:
 
 ```bash
 npm run report
