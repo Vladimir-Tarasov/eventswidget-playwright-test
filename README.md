@@ -6,9 +6,29 @@ Playwright-based UI smoke test project for:
 
 ## What is covered
 
+- `smoke.spec.ts`
 - Main page opens successfully.
 - Widget page renders visible content in the DOM.
 - No browser `pageerror` is thrown during initial load.
+
+- `header.spec.ts`
+- Header is visible on the widget page.
+
+- `header-menu.spec.ts`
+- Header menu links are present and validated (`/news/`, `/reviews/`, `/sport-events-schedule/`).
+- Navigation checks are covered for news, reviews redirect behavior, and sport schedule.
+
+- `constructor.spec.ts`
+- Constructor fields exist (`type`, `country`, `width`, `height`, preview area, color/theme step).
+- Constructor filter behavior is covered:
+  - select type/country options
+  - clear selected options
+  - verify active clear state for type filter
+- Generate preview button in constructor preview area is present.
+
+- `constructor-behavior.spec.ts`
+- Clicking the constructor preview button (`button.button.green-bg.fw-bold.text-md`) generates iframe preview.
+- Iframe appearance is validated via `iframe[id="3snet-frame"]`.
 
 ## Tech stack
 
@@ -36,6 +56,12 @@ npx playwright install
 npm test
 ```
 
+Run a single spec:
+
+```bash
+npx playwright test tests/constructor-behavior.spec.ts
+```
+
 4. Run in headed mode (visible browser):
 
 ```bash
@@ -56,4 +82,5 @@ npm run report
 
 ## Notes
 
-- The test intentionally keeps selectors generic to stay resilient if widget internals change.
+- Tests prefer stable, scoped locators (for example, container-scoped button locators and explicit `id`/`href` assertions).
+- Constructor preview iframe selector uses attribute syntax (`iframe[id="3snet-frame"]`) because CSS `#3snet-frame` is invalid for ids starting with a digit.
