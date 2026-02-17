@@ -6,7 +6,7 @@ test.describe('Header menu tests', () => {
   const topLevelHeaderMenuLinkSelector = 'header nav > ul > li > a[href]';
   const newsUrlPattern = /^https:\/\/dev\.3snet\.info\/news\/?$/;
   const reviewsRedirectUrlPattern = /^https:\/\/dev\.3snet\.info\/(?:\?.*)?$/;
-  const sportScheduleUrlPattern = /^https:\/\/dev\.3snet\.info\/sport-events-schedule\/?(?:\?.*)?$/;
+  const sportScheduleUrl = 'https://dev.3snet.info/sport-events-schedule/';
   const newsHref = '/news/';
   const newsLinkSelector = `${topLevelHeaderMenuLinkSelector}[href='${newsHref}']`;
   const reviewsHref = '/reviews/';
@@ -53,7 +53,7 @@ test.describe('Header menu tests', () => {
     await expect(link).toHaveAttribute('href', sportScheduleHref);
 
     await Promise.all([
-      page.waitForURL(sportScheduleUrlPattern, { waitUntil: 'commit' }),
+      page.waitForURL(sportScheduleUrl, { waitUntil: 'domcontentloaded' }),
       link.evaluate((element: HTMLAnchorElement) => {
         element.click();
       }),
