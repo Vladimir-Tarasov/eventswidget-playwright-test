@@ -1,6 +1,6 @@
 # eventswidget-playwright-test
 
-Playwright-based UI smoke test project for:
+Playwright-based UI test project for:
 
 - https://dev.3snet.info/eventswidget/
 
@@ -16,7 +16,7 @@ Playwright-based UI smoke test project for:
 
 - `header-menu.spec.ts`
 - Header menu links are present and validated (`/news/`, `/reviews/`, `/sport-events-schedule/`).
-- Navigation checks are covered for news, reviews redirect behavior, and sport schedule.
+- Navigation checks are covered for news, reviews redirect behavior, and sport schedule (`https://dev.3snet.info/sport-events-schedule/`).
 
 - `constructor.spec.ts`
 - Constructor fields exist (`type`, `country`, `width`, `height`, preview area, color/theme step).
@@ -29,6 +29,7 @@ Playwright-based UI smoke test project for:
 - `constructor-behavior.spec.ts`
 - Clicking the constructor preview button (`button.button.green-bg.fw-bold.text-md`) generates iframe preview.
 - Iframe appearance is validated via `iframe[id="3snet-frame"]`.
+- Generated iframe HTML is validated against the generated code text in `textarea#code`.
 
 ## Tech stack
 
