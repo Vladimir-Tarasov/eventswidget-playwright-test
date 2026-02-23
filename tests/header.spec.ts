@@ -1,28 +1,22 @@
 import { test, expect } from './fixtures';
+import { EventsWidgetPage } from './pages/events-widget.page';
+import { gotoWidgetAndAssert } from './support/navigation';
 
 test.describe('Events widget header tests', () => {
-  const widgetUrl = 'https://dev.3snet.info/eventswidget/';
-  const widgetUrlPattern = /\/eventswidget\/?$/;
-  const headerNavSelector = 'header nav';
-  const headerSearchSelector = 'header .header-search button.search-toggle';
-  const headerLanguageSelector = '.header-lang .desktop-lang, .desktop-lang';
-
   test.beforeEach(async ({ page }) => {
-    const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    expect(response, 'Header page response should exist').not.toBeNull();
-    expect(response?.ok(), 'Header page should return successful response').toBeTruthy();
-    await expect(page).toHaveURL(widgetUrlPattern);
+    await gotoWidgetAndAssert(page);
   });
 
   test('header nav menu exists', async ({ page }) => {
-    await expect(page.locator(headerNavSelector).first()).toBeVisible();
+    const widget = new EventsWidgetPage(page);
+    await expect(widget.navigation()).toBeVisible();
   });
 
   test('header search exists', async ({ page }) => {
-    await expect(page.locator(headerSearchSelector).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /search/i }).first()).toBeVisible();
   });
 
   test('header language selector exists', async ({ page }) => {
-    await expect(page.locator(headerLanguageSelector).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /(lang|english|en)/i }).first()).toBeVisible();
   });
 });

@@ -1,10 +1,8 @@
 import { test, expect } from './fixtures';
+import { EventsWidgetPage } from './pages/events-widget.page';
+import { gotoWidgetAndAssert } from './support/navigation';
 
 test.describe('Constructor behavior tests', () => {
-  const widgetUrl = 'https://dev.3snet.info/eventswidget/';
-  const widgetUrlPattern = /\/eventswidget\/?$/;
-  const constructorPreviewSectionSelector = '.constructor__preview';
-  const generatePreviewButtonSelector = 'button.button.green-bg.fw-bold.text-md';
   const generatedIframeSelector = 'iframe[id="3snet-frame"]';
   const generatedCodeTextareaSelector = 'textarea#code';
 
@@ -15,15 +13,12 @@ test.describe('Constructor behavior tests', () => {
       .trim();
 
   test('clicking generate preview button shows iframe with id "3snet-frame"', async ({ page }) => {
-    const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    expect(response, 'Constructor page response should exist').not.toBeNull();
-    expect(response?.ok(), 'Constructor page should return successful response').toBeTruthy();
-    await expect(page).toHaveURL(widgetUrlPattern);
-
-    const previewSection = page.locator(constructorPreviewSectionSelector).first();
+    await gotoWidgetAndAssert(page);
+    const widget = new EventsWidgetPage(page);
+    const previewSection = widget.constructorPreviewSection();
     await expect(previewSection, 'Constructor preview section should be visible').toBeVisible();
 
-    const generatePreviewButton = previewSection.locator(generatePreviewButtonSelector).first();
+    const generatePreviewButton = widget.generatePreviewButton();
     await expect(generatePreviewButton, 'Generate preview button should be visible').toBeVisible();
     await expect(generatePreviewButton, 'Generate preview button should be enabled').toBeEnabled();
     await generatePreviewButton.click();
@@ -34,13 +29,9 @@ test.describe('Constructor behavior tests', () => {
   });
 
   test('generated iframe html equals textarea#code text', async ({ page }) => {
-    const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    expect(response, 'Constructor page response should exist').not.toBeNull();
-    expect(response?.ok(), 'Constructor page should return successful response').toBeTruthy();
-    await expect(page).toHaveURL(widgetUrlPattern);
-
-    const previewSection = page.locator(constructorPreviewSectionSelector).first();
-    const generatePreviewButton = previewSection.locator(generatePreviewButtonSelector).first();
+    await gotoWidgetAndAssert(page);
+    const widget = new EventsWidgetPage(page);
+    const generatePreviewButton = widget.generatePreviewButton();
     await expect(generatePreviewButton, 'Generate preview button should be visible').toBeVisible();
     await generatePreviewButton.click();
 

@@ -9,12 +9,18 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
+    ['junit', { outputFile: 'test-results/results.xml' }],
+  ],
   use: {
     baseURL: 'https://dev.3snet.info/eventswidget/',
     headless: true,
     viewport: { width: 1280, height: 720 },
     trace: 'on-first-retry',
+    testIdAttribute: 'data-name',
   },
   projects: [
     {

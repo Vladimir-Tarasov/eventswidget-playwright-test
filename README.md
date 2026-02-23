@@ -1,35 +1,34 @@
 # eventswidget-playwright-test
 
-Playwright-based UI test project for:
+Playwright-based UI test project for `https://dev.3snet.info/eventswidget/`.
 
-- https://dev.3snet.info/eventswidget/
+## Project architecture
 
-## What is covered
+The suite uses Playwright's standard fixture model from `@playwright/test` and a shared test layer:
 
-- `smoke.spec.ts`
-- Main page opens successfully.
-- Widget page renders visible content in the DOM.
-- No browser `pageerror` is thrown during initial load.
+- `tests/fixtures.ts`: re-exports standard `test` and `expect` (no custom browser/page lifecycle override).
+- `tests/support/navigation.ts`: shared navigation/assertion helper for widget entry.
+- `tests/pages/events-widget.page.ts`: page object with reusable locators and actions.
+- `tests/*.spec.ts`: test intent and assertions only.
 
-- `header.spec.ts`
-- Header is visible on the widget page.
+This keeps setup logic centralized and makes the suite easier to extend with new specs without copy/pasting navigation and locator code.
 
-- `header-menu.spec.ts`
-- Header menu links are present and validated (`/news/`, `/reviews/`, `/sport-events-schedule/`).
-- Navigation checks are covered for news, reviews redirect behavior, and sport schedule (`https://dev.3snet.info/sport-events-schedule/`).
+## Test structure
 
-- `constructor.spec.ts`
-- Constructor fields exist (`type`, `country`, `width`, `height`, preview area, color/theme step).
-- Constructor filter behavior is covered:
-  - select type/country options
-  - clear selected options
-  - verify active clear state for type filter
-- Generate preview button in constructor preview area is present.
+### Specs
 
-- `constructor-behavior.spec.ts`
-- Clicking the constructor preview button (`button.button.green-bg.fw-bold.text-md`) generates iframe preview.
-- Iframe appearance is validated via `iframe[id="3snet-frame"]`.
-- Generated iframe HTML is validated against the generated code text in `textarea#code`.
+- `tests/smoke.spec.ts`: page load and core widget visibility checks.
+- `tests/header.spec.ts`: header presence checks.
+- `tests/header-menu.spec.ts`: top-menu link presence and navigation behavior.
+- `tests/constructor.spec.ts`: constructor field presence and filter interactions.
+- `tests/constructor-behavior.spec.ts`: preview-generation behavior and generated iframe/code consistency.
+
+### Locator strategy
+
+- Prefer `getByRole(...)` for interactive UI where accessible roles/names are available.
+- Prefer `getByTestId(...)` for stable test hooks.
+- `testIdAttribute` is configured as `data-name` in `playwright.config.ts`, so existing `data-name` attributes are used as test ids.
+- Native Playwright actions are used (`click()`), and direct DOM click via `evaluate(...)` is avoided.
 
 ## Tech stack
 
@@ -51,37 +50,47 @@ npm install
 npx playwright install
 ```
 
-3. Run test(s):
+3. Run the full suite:
 
 ```bash
 npm test
 ```
 
-Run a single spec:
+4. Run a single spec:
 
 ```bash
 npx playwright test tests/constructor-behavior.spec.ts
 ```
 
-4. Run in headed mode (visible browser):
+5. Run in headed mode:
 
 ```bash
 npm run test:headed
 ```
 
-5. Run with Playwright UI mode:
+6. Run in Playwright UI mode:
 
 ```bash
 npm run test:ui
 ```
 
-6. Optional: open HTML report:
+7. Open HTML report:
 
 ```bash
 npm run report
 ```
 
-## Notes
+## Result output format
 
-- Tests prefer stable, scoped locators (for example, container-scoped button locators and explicit `id`/`href` assertions).
-- Constructor preview iframe selector uses attribute syntax (`iframe[id="3snet-frame"]`) because CSS `#3snet-frame` is invalid for ids starting with a digit.
+The run produces multiple reporter outputs:
+
+- Console list reporter for quick local feedback.
+- HTML report at `playwright-report/index.html` for human-readable debugging.
+- JSON report at `test-results/results.json` for CI parsing/integrations.
+- JUnit report at `test-results/results.xml` for CI test summary views.
+
+Minimum expected run summary:
+
+- Total tests, passed, failed, skipped.
+- Failed test titles and error messages.
+- Trace/artifact availability for retried/failed tests (configured via `trace: 'on-first-retry'`).

@@ -1,21 +1,13 @@
 import { test, expect } from './fixtures';
+import { EventsWidgetPage } from './pages/events-widget.page';
+import { gotoWidgetAndAssert } from './support/navigation';
 
 test.describe('Events widget smoke tests', () => {
-  test.describe.configure({ mode: 'serial' });
-  const widgetUrl = 'https://dev.3snet.info/eventswidget/';
-  const widgetUrlPattern = /\/eventswidget\/?$/;
   const bodySelector = 'body';
   const visibleElementsSelector = 'body *:visible';
-  const widgetSelector = '.constructor';
-  const headerContainerSelector = '.header-container';
-  const promocodesCarouselSelector = '.promocodes-carousel';
-  const footerSelector = 'footer';
 
   test.beforeEach(async ({ page }) => {
-    const response = await page.goto(widgetUrl, { waitUntil: 'domcontentloaded' });
-    expect(response, 'Main page response should exist').not.toBeNull();
-    expect(response?.ok(), 'Main page should return successful response').toBeTruthy();
-    await expect(page).toHaveURL(widgetUrlPattern);
+    await gotoWidgetAndAssert(page);
   });
 
   test('page loads and renders visible content', async ({ page }) => {
@@ -34,24 +26,27 @@ test.describe('Events widget smoke tests', () => {
   });
 
   test('widget container is visible', async ({ page }) => {
-    const widgetContainer = page.locator(widgetSelector).first();
+    const widget = new EventsWidgetPage(page);
+    const widgetContainer = widget.constructorSection();
     await expect(widgetContainer).toBeVisible();
     await expect(widgetContainer).toBeInViewport();
   });
 
-  test('header container exists', async ({ page }) => {
-    await expect(page.locator(headerContainerSelector).first()).toBeVisible();
+  test('header navigation exists', async ({ page }) => {
+    const widget = new EventsWidgetPage(page);
+    await expect(widget.navigation()).toBeVisible();
   });
 
   test('constructor exists', async ({ page }) => {
-    await expect(page.locator(widgetSelector)).toHaveCount(1);
+    const widget = new EventsWidgetPage(page);
+    await expect(widget.constructorSection()).toHaveCount(1);
   });
 
   test('promocodes carousel exists', async ({ page }) => {
-    await expect(page.locator(promocodesCarouselSelector).first()).toBeVisible();
+    await expect(page.getByRole('region', { name: /promo/i }).first()).toBeVisible();
   });
 
   test('footer exists', async ({ page }) => {
-    await expect(page.locator(footerSelector).first()).toBeVisible();
+    await expect(page.getByRole('contentinfo').first()).toBeVisible();
   });
 });
